@@ -21,11 +21,13 @@ log.txt
 /platforms
 /plugins
 
-# Compiled output (keep www ignored for git, Vercel builds it)
+# Compiled output
 /dist
 /tmp
 /out-tsc
 /bazel-out
+/www
+www/
 
 # Node / Dependencias
 node_modules/

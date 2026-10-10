@@ -1,5 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { catchError, timeout } from 'rxjs/operators';
 
 export interface Ticket {
   id: number;
@@ -35,6 +36,13 @@ export class TicketService {
     this.state.update(s => ({ ...s, loading: true, error: null }));
 
     this.http.get<Ticket[]>('https://jsonplaceholder.typicode.com/todos?_limit=15')
+      .pipe(
+        timeout(3500),
+        catchError(() => {
+          // Fallback resiliente con los tickets idénticos por si la red/proveedor bloquea Cloudflare o da timeout
+          return this.http.get<Ticket[]>('assets/tickets.json');
+        })
+      )
       .subscribe({
         next: (response) => {
           this.state.update(s => ({ ...s, data: response, loading: false }));
